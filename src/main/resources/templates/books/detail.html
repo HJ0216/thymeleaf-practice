@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${title}">도서 상세</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+  <header>
+    <nav class="breadcrumb">
+      <a th:href="@{/}">홈</a> >
+      <a th:href="@{/book}">도서 목록</a> >
+      <span th:text="${book.title}">도서 제목</span>
+    </nav>
+  </header>
+
+  <main>
+    <div class="book-detail" th:object="${book}">
+      <div class="book-detail-header">
+        <!-- 도서 이미지 -->
+        <div class="book-detail-image">
+          <img th:src="@{*{coverImageUrl}}"
+               th:alt="*{title}">
+        </div>
+
+        <div class="book-detail-info">
+          <h1 th:text="*{title}">도서 제목</h1>
+
+          <div class="book-meta-detail">
+            <div class="meta-item">
+              <span class="label">저자:</span>
+              <span th:text="*{author}">저자명</span>
+            </div>
+
+            <div class="meta-item">
+              <span class="label">출판사:</span>
+              <span th:text="*{publisher}">출판사</span>
+            </div>
+
+            <div class="meta-item">
+              <span class="label">출간일:</span>
+              <span th:text="${#temporals.format(book.publishDate, 'yyyy년 MM월 dd일')}">출간일</span>
+            </div>
+
+            <div class="meta-item">
+              <span class="label">ISBN:</span>
+              <span th:text="*{isbn}">ISBN</span>
+            </div>
+
+            <div class="meta-item">
+              <span class="label">페이지:</span>
+              <span th:text="*{pages} + '쪽'">페이지 수</span>
+            </div>
+
+            <div class="meta-item">
+              <span class="label">카테고리:</span>
+              <span class="category-tag" th:text="*{category}">카테고리</span>
+            </div>
+
+            <div class="meta-item">
+              <span class="label">가격:</span>
+              <span class="price" th:text="*{formattedPrice}">가격</span>
+            </div>
+          </div>
+
+          <div class="availability-section">
+            <span class="availability-badge-large"
+                  th:class="'availability-badge-large ' + (*{available} ? 'available' : 'unavailable')"
+                  th:text="*{available} ? '대출 가능' : '대출 중'">대출 상태</span>
+          </div>
+
+          <div class="action-buttons">
+            <button th:if="*{available}" class="btn btn-success btn-large">📖 대출하기</button>
+            <button th:unless="*{available}" class="btn btn-secondary btn-large" disabled>대출 불가
+            </button>
+            <button class="btn btn-outline">💕 즐겨찾기</button>
+            <button class="btn btn-outline">📤 공유하기</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="book-description-section">
+        <h2>📖 도서 소개</h2>
+        <p th:text="*{description}">도서 설명</p>
+      </div>
+
+      <div class="conditional-content">
+        <p>
+          <strong>도서 상태:</strong>
+          <span th:text="${book.available ? '대출 가능한 도서입니다.' : '현재 대출 중인 도서입니다.'}"></span>
+        </p>
+
+        <p th:if="${book.price != null and book.price > 30000}">
+          💰 이 도서는 고가 도서입니다. (3만원 이상)
+        </p>
+
+        <p th:if="${book.publishDate.year >= 2023}">
+          🆕 신간 도서입니다!
+        </p>
+      </div>
+    </div>
+
+    <div class="related-books" th:if="${not #lists.isEmpty(relatedBooks)}">
+      <h2>🔗 관련 도서</h2>
+      <div class="related-books-grid">
+        <div class="related-book-card" th:each="relatedBook : ${relatedBooks}">
+          <img th:src="@{${relatedBook.coverImageUrl}}"
+               th:alt="${relatedBook.title}">
+          <h4 th:text="${relatedBook.title}">관련 도서 제목</h4>
+          <p th:text="${relatedBook.author}">저자</p>
+          <a th:href="@{/book/{id}(id=${relatedBook.id})}" class="btn btn-sm">상세보기</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="syntax-demo">
+      <h2>🎓 이 페이지에서 사용된 Thymeleaf 문법</h2>
+      <ul>
+        <li><code>th:object="${book}"</code> - 객체 선택</li>
+        <li><code>*{title}</code> - 선택된 객체의 속성 접근</li>
+        <li><code>th:if</code>, <code>th:unless</code> - 조건부 렌더링</li>
+        <li><code>${#temporals.format(...)}</code> - 날짜 포맷팅</li>
+        <li><code>${condition ? 'true' : 'false'}</code> - 삼항 연산자</li>
+        <li><code>@{/book/{id}(id=${book.id})}</code> - URL 생성과 변수</li>
+      </ul>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Thymeleaf Tutorial - Step 2: 기본 문법</p>
+  </footer>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

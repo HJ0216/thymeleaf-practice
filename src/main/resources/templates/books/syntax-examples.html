@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Thymeleaf 문법 예제</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <style>
+        .syntax-section {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .result {
+            background: #e8f5e8;
+            border: 1px solid #28a745;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error-demo {
+            background: #f8d7da;
+            border: 1px solid #dc3545;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .warning-demo {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info-demo {
+            background: #d1ecf1;
+            border: 1px solid #17a2b8;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .demo-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🎓 Thymeleaf 문법 완전 정복</h1>
+    <nav class="breadcrumb">
+      <a th:href="@{/}">홈</a> >
+      <a th:href="@{/books}">도서 목록</a> >
+      문법 예제
+    </nav>
+  </header>
+
+  <main>
+    <!-- 1. 변수 표현식 ${...} -->
+    <div class="syntax-section">
+      <h2>1. 변수 표현식 ${...}</h2>
+      <p>컨트롤러에서 전달받은 모델 속성에 접근합니다.</p>
+
+      <div class="code-example">
+        &lt;p th:text="${message}"&gt;기본 메시지&lt;/p&gt;
+      </div>
+      <div class="result">
+        결과: <p th:text="${message}">기본 메시지</p>
+      </div>
+
+      <div class="code-example">
+        &lt;p th:text="${book.title}"&gt;도서 제목&lt;/p&gt;
+      </div>
+      <div class="result">
+        결과: <p th:text="${book.title}">도서 제목</p>
+      </div>
+
+      <div class="code-example">
+        &lt;p&gt;오늘 날짜: &lt;span th:text="${today}"&gt;&lt;/span&gt;&lt;/p&gt;
+      </div>
+      <div class="result">
+        결과: <p>오늘 날짜: <span th:text="${today}"></span></p>
+      </div>
+    </div>
+
+    <!-- 2. 선택 표현식 *{...} -->
+    <div class="syntax-section">
+      <h2>2. 선택 표현식 *{...}</h2>
+      <p>th:object로 선택된 객체의 속성에 접근합니다.</p>
+
+      <div class="code-example">
+        &lt;div th:object="${book}"&gt;
+        &lt;h3 th:text="*{title}"&gt;제목&lt;/h3&gt;
+        &lt;p th:text="*{author}"&gt;저자&lt;/p&gt;
+        &lt;p th:text="*{formattedPrice}"&gt;가격&lt;/p&gt;
+        &lt;/div&gt;
+      </div>
+      <div class="result" th:object="${book}">
+        결과:
+        <h3 th:text="*{title}">제목</h3>
+        <p th:text="*{author}">저자</p>
+        <p th:text="*{price}">가격</p>
+      </div>
+    </div>
+
+    <!-- 3. URL 표현식 @{...} -->
+    <div class="syntax-section">
+      <h2>3. URL 표현식 @{...}</h2>
+      <p>상대/절대 URL을 생성하고 컨텍스트 패스를 자동으로 추가합니다.</p>
+
+      <div class="code-example">
+        &lt;a th:href="@{/books}"&gt;도서 목록&lt;/a&gt;
+        &lt;a th:href="@{/books/{id}(id=${book.id})}"&gt;도서 상세&lt;/a&gt;
+        &lt;a th:href="@{/books(category=${book.category})}"&gt;같은 카테고리&lt;/a&gt;
+      </div>
+      <div class="result">
+        결과:
+        <a th:href="@{/books}">도서 목록</a> |
+        <a th:href="@{/books/{id}(id=${book.id})}">도서 상세</a> |
+        <a th:href="@{/books(category=${book.category})}">같은 카테고리</a>
+      </div>
+    </div>
+
+    <!-- 4. 텍스트 처리 -->
+    <div class="syntax-section">
+      <h2>4. 텍스트 처리 (th:text vs th:utext)</h2>
+
+      <div class="code-example">
+        &lt;p th:text="${htmlContent}"&gt;HTML 내용&lt;/p&gt;
+        &lt;p th:utext="${htmlContent}"&gt;HTML 내용&lt;/p&gt;
+      </div>
+      <div class="result">
+        th:text 결과: <p th:text="${htmlContent}">HTML 내용</p>
+        th:utext 결과: <p th:utext="${htmlContent}">HTML 내용</p>
+      </div>
+    </div>
+
+    <!-- 5. 조건 표현식 -->
+    <div class="syntax-section">
+      <h2>5. 조건 표현식</h2>
+
+      <div class="code-example">
+        &lt;p th:if="${isAdmin}"&gt;관리자만 볼 수 있습니다.&lt;/p&gt;
+        &lt;p th:unless="${isAdmin}"&gt;일반 사용자입니다.&lt;/p&gt;
+        &lt;p th:text="${isAdmin ? '관리자' : '일반 사용자'}"&gt;&lt;/p&gt;
+      </div>
+      <div class="result">
+        <p th:if="${isAdmin}">관리자만 볼 수 있습니다.</p>
+        <p th:unless="${isAdmin}">일반 사용자입니다.</p>
+        <p th:text="${isAdmin ? '관리자' : '일반 사용자'}"></p>
+      </div>
+    </div>
+
+    <!-- 6. Null 안전 처리 -->
+    <div class="syntax-section">
+      <h2>6. Null 안전 처리 (Elvis 연산자)</h2>
+
+      <div class="code-example">
+        &lt;p th:text="${nullValue ?: '기본값'}"&gt;Null 처리&lt;/p&gt;
+        &lt;p th:text="${emptyString ?: '빈 문자열 처리'}"&gt;빈 문자열 처리&lt;/p&gt;
+        &lt;p th:text="${book.description ?: '설명이 없습니다.'}"&gt;설명&lt;/p&gt;
+      </div>
+      <div class="result">
+        <p th:text="${nullValue ?: '기본값'}">Null 처리</p>
+        <p th:text="${emptyString ?: '빈 문자열 처리'}">빈 문자열 처리</p>
+        <p th:text="${book.description ?: '설명이 없습니다.'}">설명</p>
+      </div>
+    </div>
+
+    <!-- 7. 문자열 연산 -->
+    <div class="syntax-section">
+      <h2>7. 문자열 연산</h2>
+
+      <div class="code-example">
+        &lt;p th:text="'안녕하세요, ' + ${userName} + '님!'"&gt;인사말&lt;/p&gt;
+        &lt;p th:text="|안녕하세요, ${userName}님!|"&gt;리터럴 치환&lt;/p&gt;
+        &lt;p th:text="${book.title} + ' - ' + ${book.author}"&gt;제목과 저자&lt;/p&gt;
+      </div>
+      <div class="result">
+        <p th:text="'안녕하세요, ' + ${userName} + '님!'">인사말</p>
+        <p th:text="|안녕하세요, ${userName}님!|">리터럴 치환</p>
+        <p th:text="${book.title} + ' - ' + ${book.author}">제목과 저자</p>
+      </div>
+    </div>
+
+    <!-- 8. 숫자와 날짜 포맷팅 -->
+    <div class="syntax-section">
+      <h2>8. 숫자와 날짜 포맷팅</h2>
+
+      <div class="code-example">
+        &lt;p th:text="${#numbers.formatDecimal(book.price, 0, 0)} + '원'"&gt;가격 포맷&lt;/p&gt;
+        &lt;p th:text="${#temporals.format(today, 'yyyy년 MM월 dd일')}"&gt;날짜 포맷&lt;/p&gt;
+        &lt;p th:text="${#temporals.format(today, 'E요일')}"&gt;요일&lt;/p&gt;
+      </div>
+      <div class="result">
+        <p th:text="${#numbers.formatDecimal(book.price, 0, 0)} + '원'">가격 포맷</p>
+        <p th:text="${#temporals.format(today, 'yyyy년 MM월 dd일')}">날짜 포맷</p>
+        <p th:text="${#temporals.format(today, 'E요일')}">요일</p>
+      </div>
+    </div>
+
+    <!-- 9. 컬렉션 처리 -->
+    <div class="syntax-section">
+      <h2>9. 컬렉션 처리</h2>
+
+      <div class="code-example">
+        &lt;p&gt;숫자 목록:&lt;/p&gt;
+        &lt;ul&gt;
+        &lt;li th:each="num : ${numbers}" th:text="${num}"&gt;숫자&lt;/li&gt;
+        &lt;/ul&gt;
+
+        &lt;p th:text="'총 ' + ${#lists.size(numbers)} + '개의 숫자'"&gt;개수&lt;/p&gt;
+        &lt;p th:if="${#lists.isEmpty(numbers)}"&gt;목록이 비어있습니다.&lt;/p&gt;
+      </div>
+      <div class="result">
+        <p>숫자 목록:</p>
+        <ul>
+          <li th:each="num : ${numbers}" th:text="${num}">숫자</li>
+        </ul>
+        <p th:text="'총 ' + ${#lists.size(numbers)} + '개의 숫자'">개수</p>
+        <p th:if="${#lists.isEmpty(numbers)}">목록이 비어있습니다.</p>
+      </div>
+    </div>
+
+    <!-- 10. CSS 클래스와 속성 처리 -->
+    <div class="syntax-section">
+      <h2>10. CSS 클래스와 속성 처리</h2>
+
+      <div class="code-example">
+        &lt;div th:class="${book.available ? 'available' : 'unavailable'}"&gt;
+        상태에 따른 클래스 적용
+        &lt;/div&gt;
+
+        &lt;input type="text" th:value="${book.title}" th:readonly="${!isAdmin}"&gt;
+
+        &lt;button th:disabled="${!book.available}"&gt;대출하기&lt;/button&gt;
+      </div>
+      <div class="result">
+        <div th:class="${book.available ? 'available' : 'unavailable'}"
+             style="padding: 10px; border-radius: 5px; margin: 5px 0;">
+          상태에 따른 클래스 적용
+        </div>
+        <input type="text" th:value="${book.title}" th:readonly="${!isAdmin}" style="margin: 5px;">
+        <button th:disabled="${!book.available}" style="margin: 5px;">대출하기</button>
+      </div>
+    </div>
+
+    <!-- 11. 인라인 표현식 -->
+    <div class="syntax-section">
+      <h2>11. 인라인 표현식 [[...]]</h2>
+
+      <div class="code-example">
+        &lt;p&gt;도서 제목: [[${book.title}]]&lt;/p&gt;
+        &lt;p&gt;현재 시간: [[${#temporals.format(today, 'HH:mm:ss')}]]&lt;/p&gt;
+        &lt;script th:inline="javascript"&gt;
+        var bookTitle = [[${book.title}]];
+        console.log('도서:', bookTitle);
+        &lt;/script&gt;
+      </div>
+      <div class="result">
+        <p>도서 제목: [[${book.title}]]</p>
+        <p>현재 시간: [[${#temporals.format(today, 'HH:mm:ss')}]]</p>
+      </div>
+    </div>
+
+    <!-- 12. 유틸리티 객체 -->
+    <div class="syntax-section">
+      <h2>12. 유틸리티 객체</h2>
+
+      <div class="code-example">
+        &lt;p&gt;문자열 길이: [[${#strings.length(book.title)}]]&lt;/p&gt;
+        &lt;p&gt;대문자: [[${#strings.toUpperCase(book.category)}]]&lt;/p&gt;
+        &lt;p&gt;문자열 포함: [[${#strings.contains(book.title, '자바')}]]&lt;/p&gt;
+        &lt;p&gt;배열 크기: [[${#lists.size(numbers)}]]&lt;/p&gt;
+      </div>
+      <div class="result">
+        <p>문자열 길이: [[${#strings.length(book.title)}]]</p>
+        <p>대문자: [[${#strings.toUpperCase(book.category)}]]</p>
+        <p>문자열 포함: [[${#strings.contains(book.title, '자바')}]]</p>
+        <p>배열 크기: [[${#lists.size(numbers)}]]</p>
+      </div>
+    </div>
+
+    <!-- 13. 반복문 상태 변수 -->
+    <div class="syntax-section">
+      <h2>13. 반복문 상태 변수 (iterStat)</h2>
+
+      <div class="code-example">
+        &lt;table&gt;
+        &lt;tr th:each="num, iterStat : ${numbers}"&gt;
+        &lt;td th:text="${iterStat.index}"&gt;인덱스&lt;/td&gt;
+        &lt;td th:text="${iterStat.count}"&gt;카운트&lt;/td&gt;
+        &lt;td th:text="${num}"&gt;값&lt;/td&gt;
+        &lt;td th:text="${iterStat.odd ? '홀수번째' : '짝수번째'}"&gt;순서&lt;/td&gt;
+        &lt;td th:text="${iterStat.first ? '첫번째' : ''}"&gt;첫번째&lt;/td&gt;
+        &lt;td th:text="${iterStat.last ? '마지막' : ''}"&gt;마지막&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;/table&gt;
+      </div>
+      <div class="result">
+        <table border="1" style="border-collapse: collapse; margin: 10px 0;">
+          <thead>
+          <tr>
+            <th>인덱스</th>
+            <th>카운트</th>
+            <th>값</th>
+            <th>순서</th>
+            <th>첫번째</th>
+            <th>마지막</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="num, iterStat : ${numbers}">
+            <td th:text="${iterStat.index}">인덱스</td>
+            <td th:text="${iterStat.count}">카운트</td>
+            <td th:text="${num}">값</td>
+            <td th:text="${iterStat.odd ? '홀수번째' : '짝수번째'}">순서</td>
+            <td th:text="${iterStat.first ? '첫번째' : ''}">첫번째</td>
+            <td th:text="${iterStat.last ? '마지막' : ''}">마지막</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 14. Switch 문 -->
+    <div class="syntax-section">
+      <h2>14. Switch 문</h2>
+
+      <div class="code-example">
+        &lt;div th:switch="${book.category}"&gt;
+        &lt;p th:case="'프로그래밍'"&gt;💻 프로그래밍 도서입니다&lt;/p&gt;
+        &lt;p th:case="'웹개발'"&gt;🌐 웹개발 도서입니다&lt;/p&gt;
+        &lt;p th:case="'데이터베이스'"&gt;🗄️ 데이터베이스 도서입니다&lt;/p&gt;
+        &lt;p th:case="*"&gt;📚 기타 도서입니다&lt;/p&gt;
+        &lt;/div&gt;
+      </div>
+      <div class="result" th:switch="${book.category}">
+        <p th:case="'프로그래밍'">💻 프로그래밍 도서입니다</p>
+        <p th:case="'웹개발'">🌐 웹개발 도서입니다</p>
+        <p th:case="'데이터베이스'">🗄️ 데이터베이스 도서입니다</p>
+        <p th:case="*">📚 기타 도서입니다</p>
+      </div>
+    </div>
+
+    <!-- 15. 고급 조건식 -->
+    <div class="syntax-section">
+      <h2>15. 고급 조건식</h2>
+
+      <div class="demo-grid">
+        <div class="demo-item">
+          <h4>논리 연산자</h4>
+          <div class="code-example">
+            &lt;p th:if="${book.available and book.price &lt; 50000}"&gt;
+            대출 가능하고 저렴한 도서
+            &lt;/p&gt;
+            &lt;p th:if="${book.author == '로버트 C. 마틴' or book.author == '조슈아 블로크'}"&gt;
+            유명 저자의 도서
+            &lt;/p&gt;
+          </div>
+          <div class="result">
+            <p th:if="${book.available and book.price < 50000}">
+              대출 가능하고 저렴한 도서
+            </p>
+            <p th:if="${book.author == '로버트 C. 마틴' or book.author == '조슈아 블로크'}">
+              유명 저자의 도서
+            </p>
+          </div>
+        </div>
+
+        <div class="demo-item">
+          <h4>비교 연산자</h4>
+          <div class="code-example">
+            &lt;p th:if="${book.pages gt 500}"&gt;두꺼운 책&lt;/p&gt;
+            &lt;p th:if="${book.price le 30000}"&gt;저렴한 책&lt;/p&gt;
+            &lt;p th:if="${book.publishDate ge today.minusYears(1)}"&gt;신간&lt;/p&gt;
+          </div>
+          <div class="result">
+            <p th:if="${book.pages gt 500}">두꺼운 책</p>
+            <p th:if="${book.price le 30000}">저렴한 책</p>
+            <p th:if="${book.publishDate ge today.minusYears(1)}">신간</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 16. 동적 속성 -->
+    <div class="syntax-section">
+      <h2>16. 동적 속성</h2>
+
+      <div class="code-example">
+        &lt;div th:attr="data-book-id=${book.id}, data-available=${book.available}"&gt;
+        동적 데이터 속성
+        &lt;/div&gt;
+
+        &lt;img th:src="@{${book.coverImageUrl}}"
+        th:alt="${book.title}"
+        th:title="'도서: ' + ${book.title}"&gt;
+
+        &lt;input th:name="'book_' + ${book.id}"
+        th:id="'input_' + ${book.id}"
+        th:value="${book.title}"&gt;
+      </div>
+      <div class="result">
+        <div th:attr="data-book-id=${book.id}, data-available=${book.available}"
+             style="border: 1px solid #ccc; padding: 10px; margin: 5px 0;">
+          동적 데이터 속성 (개발자 도구에서 확인)
+        </div>
+
+        <img th:src="@{${book.coverImageUrl}}"
+             th:alt="${book.title}"
+             th:title="'도서: ' + ${book.title}"
+             style="max-width: 100px; max-height: 120px;">
+
+        <input th:name="'book_' + ${book.id}"
+               th:id="'input_' + ${book.id}"
+               th:value="${book.title}"
+               style="margin: 5px 0; display: block;">
+      </div>
+    </div>
+
+    <!-- 17. 폼 관련 -->
+    <div class="syntax-section">
+      <h2>17. 폼 관련 처리</h2>
+
+      <div class="code-example">
+        &lt;form th:action="@{/books}" method="post"&gt;
+        &lt;select th:name="category"&gt;
+        &lt;option value=""&gt;카테고리 선택&lt;/option&gt;
+        &lt;option th:each="cat : ${categories}"
+        th:value="${cat}"
+        th:text="${cat}"
+        th:selected="${cat == book.category}"&gt;카테고리&lt;/option&gt;
+        &lt;/select&gt;
+
+        &lt;input type="checkbox"
+        th:name="available"
+        th:checked="${book.available}"&gt; 대출 가능
+        &lt;/form&gt;
+      </div>
+      <div class="result">
+        <form style="border: 1px solid #ddd; padding: 15px; margin: 10px 0;">
+          <select name="category" style="margin-bottom: 10px;">
+            <option value="">카테고리 선택</option>
+            <option th:each="cat : ${categories}"
+                    th:value="${cat}"
+                    th:text="${cat}"
+                    th:selected="${cat == book.category}">카테고리
+            </option>
+          </select>
+          <br>
+          <input type="checkbox"
+                 name="available"
+                 th:checked="${book.available}"> 대출 가능
+        </form>
+      </div>
+    </div>
+
+    <!-- 학습 정리 -->
+    <div class="syntax-section" style="background: #e3f2fd; border-left-color: #1976d2;">
+      <h2>📚 학습 정리</h2>
+      <div class="demo-grid">
+        <div class="demo-item">
+          <h4>기본 표현식</h4>
+          <ul>
+            <li><strong>${...}</strong>: 변수 표현식 - 모델 속성 접근</li>
+            <li><strong>*{...}</strong>: 선택 표현식 - th:object로 선택된 객체 속성 접근</li>
+            <li><strong>@{...}</strong>: URL 표현식 - 링크 URL 생성</li>
+            <li><strong>#{...}</strong>: 메시지 표현식 - 국제화 메시지</li>
+            <li><strong>~{...}</strong>: 조각 표현식 - 템플릿 조각</li>
+            <li><strong>[[...]]</strong>: 인라인 표현식 - 텍스트 내 변수 삽입</li>
+          </ul>
+        </div>
+
+        <div class="demo-item">
+          <h4>제어 구조</h4>
+          <ul>
+            <li><strong>th:if / th:unless</strong>: 조건부 렌더링</li>
+            <li><strong>th:each</strong>: 반복문 (iterStat 포함)</li>
+            <li><strong>th:switch / th:case</strong>: Switch 문</li>
+            <li><strong>? :</strong>: 삼항 연산자</li>
+            <li><strong>?:</strong>: Elvis 연산자 (null 처리)</li>
+          </ul>
+        </div>
+
+        <div class="demo-item">
+          <h4>텍스트와 속성</h4>
+          <ul>
+            <li><strong>th:text</strong>: HTML 이스케이프된 텍스트</li>
+            <li><strong>th:utext</strong>: 원본 HTML 출력</li>
+            <li><strong>th:attr</strong>: 동적 속성 설정</li>
+            <li><strong>th:class / th:classappend</strong>: CSS 클래스 관리</li>
+            <li><strong>th:style</strong>: 인라인 스타일</li>
+          </ul>
+        </div>
+
+        <div class="demo-item">
+          <h4>유틸리티 객체</h4>
+          <ul>
+            <li><strong>#strings</strong>: 문자열 처리</li>
+            <li><strong>#numbers</strong>: 숫자 포맷팅</li>
+            <li><strong>#temporals</strong>: 날짜/시간 처리</li>
+            <li><strong>#lists</strong>: 리스트 조작</li>
+            <li><strong>#maps</strong>: 맵 처리</li>
+            <li><strong>#aggregates</strong>: 집계 함수</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>💡 중요 포인트</h3>
+      <ul>
+        <li>th:text는 HTML 이스케이프, th:utext는 원본 HTML 출력</li>
+        <li>Elvis 연산자(?:)로 null 안전 처리</li>
+        <li>삼항 연산자로 조건부 값 설정</li>
+        <li>유틸리티 객체(#strings, #numbers, #temporals 등) 적극 활용</li>
+        <li>th:class, th:disabled 등으로 동적 속성 설정</li>
+        <li>iterStat으로 반복문 상태 정보 활용</li>
+        <li>Switch 문으로 복잡한 조건 처리 간소화</li>
+      </ul>
+
+      <h3>🚀 실무 팁</h3>
+      <ul>
+        <li><span class="highlight">성능</span>: 불필요한 객체 접근 최소화</li>
+        <li><span class="highlight">가독성</span>: 복잡한 표현식은 컨트롤러에서 처리</li>
+        <li><span class="highlight">유지보수</span>: 일관된 명명 규칙 사용</li>
+        <li><span class="highlight">디버깅</span>: 브라우저 개발자 도구로 렌더링 결과 확인</li>
+      </ul>
+    </div>
+
+    <!-- 실전 예제 -->
+    <div class="syntax-section" style="background: #f0f8ff; border-left-color: #4169e1;">
+      <h2>🎯 실전 종합 예제</h2>
+      <p>실제 도서 카드 컴포넌트에서 사용되는 다양한 Thymeleaf 기능들</p>
+
+      <div class="code-example">
+        &lt;div class="book-card" th:each="book, bookStat : ${books}"
+        th:object="${book}"
+        th:attr="data-book-id=*{id}"
+        th:classappend="*{available} ? 'available' : 'unavailable'"&gt;
+
+        &lt;!-- 순번 표시 --&gt;
+        &lt;div class="book-number" th:text="${bookStat.count}"&gt;1&lt;/div&gt;
+
+        &lt;!-- 책 표지 이미지 --&gt;
+        &lt;img th:src="@{*{coverImageUrl}}"
+        th:alt="*{title}"
+        th:onerror="'this.src=\'/images/no-image.jpg\''"&gt;
+
+        &lt;!-- 책 제목 (링크) --&gt;
+        &lt;h3&gt;
+        &lt;a th:href="@{/books/{id}(id=*{id})}"
+        th:text="*{title}"
+        th:title="'상세보기: ' + *{title}"&gt;도서 제목&lt;/a&gt;
+        &lt;/h3&gt;
+
+        &lt;!-- 저자와 출판 정보 --&gt;
+        &lt;p class="author" th:text="*{author}"&gt;저자&lt;/p&gt;
+        &lt;p class="publisher"
+        th:text="*{publisher} + ' | ' + ${#temporals.format(*{publishDate}, 'yyyy년')}"&gt;
+        출판 정보
+        &lt;/p&gt;
+
+        &lt;!-- 카테고리 배지 --&gt;
+        &lt;span class="category-badge"
+        th:text="*{category}"
+        th:style="'background-color: ' + ${categoryColors[*{category}]} + ';'"&gt;
+        카테고리
+        &lt;/span&gt;
+
+        &lt;!-- 가격 표시 --&gt;
+        &lt;div class="price-section"&gt;
+        &lt;span th:if="*{price != null}"
+        class="price"
+        th:text="${#numbers.formatDecimal(*{price}, 0, 0)} + '원'"&gt;가격&lt;/span&gt;
+        &lt;span th:unless="*{price != null}" class="price-na"&gt;가격 미정&lt;/span&gt;
+        &lt;/div&gt;
+
+        &lt;!-- 대출 상태 --&gt;
+        &lt;div class="status-section"&gt;
+        &lt;span th:switch="*{available}"&gt;
+        &lt;span th:case="true" class="status available"&gt;✅ 대출 가능&lt;/span&gt;
+        &lt;span th:case="false" class="status unavailable"&gt;📖 대출 중&lt;/span&gt;
+        &lt;/span&gt;
+        &lt;/div&gt;
+
+        &lt;!-- 설명 (축약) --&gt;
+        &lt;p class="description"
+        th:text="${#strings.abbreviate(*{description ?: '설명이 없습니다.'}, 100)}"&gt;
+        설명
+        &lt;/p&gt;
+
+        &lt;!-- 태그들 --&gt;
+        &lt;div class="tags" th:if="*{pages != null}"&gt;
+        &lt;span class="tag" th:if="*{pages &gt; 500}"&gt;📚 두꺼운 책&lt;/span&gt;
+        &lt;span class="tag" th:if="*{publishDate.year &gt;= 2023}"&gt;🆕 신간&lt;/span&gt;
+        &lt;span class="tag" th:if="*{price != null and price &lt; 20000}"&gt;💰 저렴&lt;/span&gt;
+        &lt;/div&gt;
+
+        &lt;!-- 액션 버튼들 --&gt;
+        &lt;div class="actions"&gt;
+        &lt;a th:href="@{/books/{id}(id=*{id})}" class="btn btn-primary"&gt;상세보기&lt;/a&gt;
+        &lt;button th:if="*{available}"
+        class="btn btn-success"
+        th:onclick="'borrowBook(' + *{id} + ')'"&gt;대출하기&lt;/button&gt;
+        &lt;button th:unless="*{available}"
+        class="btn btn-secondary"
+        disabled&gt;대출 불가&lt;/button&gt;
+        &lt;/div&gt;
+
+        &lt;!-- 마지막 도서인 경우 특별 표시 --&gt;
+        &lt;div th:if="${bookStat.last}" class="last-item-notice"&gt;
+        마지막 도서입니다
+        &lt;/div&gt;
+        &lt;/div&gt;
+      </div>
+
+      <div class="result">
+        <p><strong>위 코드에서 사용된 Thymeleaf 기능들:</strong></p>
+        <ul>
+          <li>✅ <code>th:each</code>와 상태 변수 (bookStat)</li>
+          <li>✅ <code>th:object</code>와 선택 표현식 (*{})</li>
+          <li>✅ 동적 속성 설정 (th:attr, th:classappend)</li>
+          <li>✅ URL 생성과 파라미터 (@{...})</li>
+          <li>✅ 조건부 렌더링 (th:if, th:unless)</li>
+          <li>✅ Switch 문 (th:switch, th:case)</li>
+          <li>✅ 문자열 함수 (#strings.abbreviate)</li>
+          <li>✅ 숫자 포맷팅 (#numbers.formatDecimal)</li>
+          <li>✅ 날짜 포맷팅 (#temporals.format)</li>
+          <li>✅ Elvis 연산자 (?: null 처리)</li>
+          <li>✅ 동적 스타일 (th:style)</li>
+          <li>✅ 복합 조건 (논리 연산자)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 디버깅 팁 -->
+    <div class="syntax-section" style="background: #fff3cd; border-left-color: #ffc107;">
+      <h2>🔧 디버깅과 트러블슈팅</h2>
+
+      <div class="demo-grid">
+        <div class="demo-item">
+          <h4>흔한 에러와 해결법</h4>
+          <div class="error-demo">
+            <strong>❌ 자주 발생하는 오류:</strong>
+            <ul>
+              <li><code>PropertyNotFoundException</code> - 존재하지 않는 속성 접근</li>
+              <li><code>TemplateInputException</code> - 문법 오류</li>
+              <li><code>NullPointerException</code> - null 객체 접근</li>
+            </ul>
+          </div>
+
+          <div class="result">
+            <strong>✅ 해결 방법:</strong>
+            <ul>
+              <li>Elvis 연산자 사용: <code>${obj?.property ?: 'default'}</code></li>
+              <li>조건부 접근: <code>th:if="${obj != null}"</code></li>
+              <li>Safe navigation: <code>${obj?.method()}</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="demo-item">
+          <h4>성능 최적화 팁</h4>
+          <div class="info-demo">
+            <strong>🚀 성능 향상:</strong>
+            <ul>
+              <li>템플릿 캐싱 활용</li>
+              <li>불필요한 객체 접근 최소화</li>
+              <li>조건부 렌더링으로 DOM 최적화</li>
+              <li>Fragment 재사용으로 중복 제거</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="demo-item">
+          <h4>개발 도구 활용</h4>
+          <div class="code-example" style="font-size: 0.9em;">
+            # application.properties (개발 시)
+            spring.thymeleaf.cache=false
+            spring.thymeleaf.mode=HTML
+            logging.level.org.thymeleaf=DEBUG
+          </div>
+          <p>브라우저 개발자 도구로 렌더링된 HTML 확인</p>
+        </div>
+
+        <div class="demo-item">
+          <h4>테스트 방법</h4>
+          <div class="result">
+            <ul>
+              <li>단위 테스트: MockMvc 사용</li>
+              <li>통합 테스트: @SpringBootTest</li>
+              <li>템플릿 테스트: Thymeleaf Testing</li>
+              <li>브라우저 테스트: Selenium</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 다음 단계 안내 -->
+    <div class="navigation-section">
+      <a th:href="@{/book}" class="btn btn-secondary">← 도서 목록으로</a>
+      <a href="#" class="btn btn-primary">다음 단계: Spring 연동 →</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Thymeleaf Tutorial - Step 2: 기본 문법 완전 정복</p>
+  </footer>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+<script th:inline="javascript">
+        // JavaScript 인라인 예제
+        var bookData = {
+            title: [[${book.title}]],
+            author: [[${book.author}]],
+            available: [[${book.available}]],
+            price: [[${book.price}]]
+        };
+
+        console.log('도서 정보:', bookData);
+
+        // 대출 기능 예시
+        function borrowBook(bookId) {
+            if (confirm('이 도서를 대출하시겠습니까?')) {
+                // 실제로는 AJAX 요청을 보냄
+                alert('대출 신청이 완료되었습니다. (도서 ID: ' + bookId + ')');
+            }
+        }
+
+        // 페이지 로드 시 실행
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Thymeleaf 문법 예제 페이지 로드 완료');
+
+            // 코드 예제 하이라이트
+            const codeBlocks = document.querySelectorAll('.code-example');
+            codeBlocks.forEach(block => {
+                block.addEventListener('click', function() {
+                    // 코드 블록 클릭 시 복사 기능
+                    navigator.clipboard.writeText(this.textContent);
+
+                    // 임시 알림
+                    const originalBg = this.style.backgroundColor;
+                    this.style.backgroundColor = '#4a5568';
+                    setTimeout(() => {
+                        this.style.backgroundColor = originalBg;
+                    }, 200);
+                });
+            });
+
+            // 결과 영역 애니메이션
+            const results = document.querySelectorAll('.result');
+            results.forEach((result, index) => {
+                setTimeout(() => {
+                    result.style.opacity = '1';
+                    result.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+
+        // 실시간 시간 업데이트 예제
+        function updateCurrentTime() {
+            const timeElements = document.querySelectorAll('[data-time="current"]');
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('ko-KR');
+
+            timeElements.forEach(element => {
+                element.textContent = timeString;
+            });
+        }
+
+        // 1초마다 시간 업데이트
+        setInterval(updateCurrentTime, 1000);
+        updateCurrentTime(); // 초기 실행
+
+
+</script>
+
+<!-- 추가 스타일 -->
+<style>
+        .navigation-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .result {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .code-example {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .code-example:hover {
+            background: #1a202c !important;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navigation-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .syntax-section {
+                padding: 15px;
+            }
+        }
+
+
+</style>
+</body>
+</html>
